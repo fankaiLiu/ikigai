@@ -1,5 +1,5 @@
 use chrono::{DateTime, Datelike, Utc};
-
+#[derive(Debug, PartialEq)]
 pub struct Constellation {
     t: DateTime<Utc>,
 }
