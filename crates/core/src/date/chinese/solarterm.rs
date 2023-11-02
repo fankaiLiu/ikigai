@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, NaiveDateTime, TimeZone, Local, Datelike};
+use chrono::{DateTime, Datelike, Local, NaiveDateTime, TimeZone, Utc};
 
 use super::utils;
 
@@ -27432,6 +27432,7 @@ pub const SOLARTERM_J2000: [f64; 26328] = [
     2817537.75402778,
     2817552.48905733,
 ];
+#[derive(Debug, Clone, PartialEq)]
 pub struct Solarterm {
     index: i64,
 }
@@ -27530,7 +27531,7 @@ impl Solarterm {
         let s = self.time();
 
         let t1 = Utc.ymd(s.year(), s.month(), s.day()).and_hms(0, 0, 0);
-        
+
         let t2 = t1 + chrono::Duration::days(1);
 
         t1.timestamp() <= t.timestamp() && t.timestamp() <= t2.timestamp()
@@ -27540,7 +27541,9 @@ impl Solarterm {
     fn get_timestamp(index: i64) -> i64 {
         let jd = SOLARTERM_J2000[index as usize];
         let (y, m, d, h, i, s) = utils::dd(jd);
-        let date = Utc.ymd(y, m as u32, d as u32).and_hms(h as u32, i as u32, s as u32);
+        let date = Utc
+            .ymd(y, m as u32, d as u32)
+            .and_hms(h as u32, i as u32, s as u32);
         date.timestamp()
     }
 
