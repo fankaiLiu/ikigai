@@ -119,7 +119,7 @@ impl Lunar {
             offset += days_of_month;
             month_counter -= 1;
         }
-        lunar_month = month_counter;
+        lunar_month = month_counter+1;
         lunar_day = offset + 1;
         lunar_month_is_leap = is_leap;
 
@@ -259,6 +259,7 @@ mod tests {
         let tests = vec![
             ("test_2", 1522422690, 2018, 2, 14, false),
             ("test_1", 1502769600, 2017, 6, 24, true),
+            ("test_3",1699025232,2023,9,20,false)
         ];
 
         for (
@@ -279,7 +280,7 @@ mod tests {
                 "Mismatch in lunar year for {}",
                 name
             );
-            // assert_eq!(got_lunar_month, want_lunar_month, "Mismatch in lunar month for {}", name);
+            assert_eq!(got_lunar_month, want_lunar_month, "Mismatch in lunar month for {}", name);
             assert_eq!(
                 got_lunar_day, want_lunar_day,
                 "Mismatch in lunar day for {}",
