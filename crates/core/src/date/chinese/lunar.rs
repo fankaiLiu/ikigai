@@ -90,7 +90,8 @@ impl Lunar {
         let mut days_of_month = 0;
 
         let mut month_counter = 1;
-        while month_counter <= 13 {
+        while month_counter < 13 {
+            //leap month
             if leap > 0 && month_counter == leap + 1 && !is_leap {
                 month_counter -= 1;
                 is_leap = true;
@@ -107,6 +108,7 @@ impl Lunar {
             }
             month_counter += 1;
         }
+        // If offset is 0, and the month just calculated is a leap month, correct
         if offset == 0 && leap > 0 && month_counter == leap + 1 {
             if is_leap {
                 is_leap = false;
@@ -119,7 +121,7 @@ impl Lunar {
             offset += days_of_month;
             month_counter -= 1;
         }
-        lunar_month = month_counter+1;
+        lunar_month = month_counter + 1;
         lunar_day = offset + 1;
         lunar_month_is_leap = is_leap;
 
@@ -259,7 +261,7 @@ mod tests {
         let tests = vec![
             ("test_2", 1522422690, 2018, 2, 14, false),
             ("test_1", 1502769600, 2017, 6, 24, true),
-            ("test_3",1699025232,2023,9,20,false)
+            ("test_3", 1699025232, 2023, 9, 20, false),
         ];
 
         for (
@@ -280,7 +282,11 @@ mod tests {
                 "Mismatch in lunar year for {}",
                 name
             );
-            assert_eq!(got_lunar_month, want_lunar_month, "Mismatch in lunar month for {}", name);
+            assert_eq!(
+                got_lunar_month, want_lunar_month,
+                "Mismatch in lunar month for {}",
+                name
+            );
             assert_eq!(
                 got_lunar_day, want_lunar_day,
                 "Mismatch in lunar day for {}",
@@ -291,6 +297,30 @@ mod tests {
                 "Mismatch in lunar month leap status for {}",
                 name
             );
+        }
+    }
+
+    #[test]
+    fn test_to_solar_timestamp() {
+        let test_cases = vec![
+            ("test_1", 2017, 6, 24, 12, 0, 0, true, 1502769600),
+            ("test_2", 2018, 2, 14, 23, 11, 30, true, 1522422690),
+            ("test_3", 2018, 2, 14, 23, 11, 30, false, 1522422690),
+            ("test_4", 1900, 1, 14, 23, 11, 30, false, 0),
+            ("test_5", 2100, 12, 14, 23, 11, 30, false, 0),
+            ("test_6", 1900 - 1, 1, 14, 23, 11, 30, false, 0),
+            ("test_7", 2100 + 1, 12, 14, 23, 11, 30, false, 0),
+            ("test_8", 1900, 2, 100000, 23, 11, 30, false, 0),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let want = case.8;
+
+            let got =
+                Lunar::to_solar_timestamp(case.1, case.2, case.3, case.4, case.5, case.6, case.7);
+
+            assert_eq!(got, want, "{} failed", name);
         }
     }
 }
