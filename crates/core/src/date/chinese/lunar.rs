@@ -1,5 +1,7 @@
 use chrono::{Datelike, TimeZone, Utc};
 
+use super::animal::Animal;
+
 #[derive(Debug, PartialEq)]
 pub struct Lunar {
     t: chrono::DateTime<chrono::Utc>,
@@ -8,6 +10,13 @@ pub struct Lunar {
     day: i64,
     month_is_leap: bool,
 }
+const NUMBER_ALIAS: [&str; 10] = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+const DATE_ALIAS: [&str; 4] = ["初", "十", "廿", "卅"];
+
+const LUNAR_MONTH_ALIAS: [&str; 12] = [
+    "正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊",
+];
 
 const LUNARS: [i64; 201] = [
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0,
@@ -206,7 +215,7 @@ impl Lunar {
     }
 
     pub fn is_leap(&self) -> bool {
-        Self::leap_month(self.month) != 0
+        Self::leap_month(self.year) != 0
     }
 
     pub fn is_leap_month(&self) -> bool {
@@ -260,6 +269,47 @@ impl Lunar {
         } else {
             29
         }
+    }
+    // 获取生肖
+    pub fn animal(&self) -> Animal {
+        let index = (self.year - 3) % 12;
+        Animal::new(index).unwrap()
+    }
+
+    // 汉字表示年份
+    pub fn year_alias(&self) -> String {
+        let mut result = self.year.to_string();
+        for (i, alias) in NUMBER_ALIAS.iter().enumerate() {
+            result = result.replace(&i.to_string(), *alias);
+        }
+        result
+    }
+
+    // 汉字表示月份
+    pub fn month_alias(&self) -> String {
+        let mut alias = String::new();
+        if self.month_is_leap {
+            alias += "闰";
+        }
+        alias += LUNAR_MONTH_ALIAS[self.month as usize - 1];
+        alias += "月";
+        alias
+    }
+
+    // 汉字表示日期
+    pub fn day_alias(&self) -> String {
+        let mut alias = String::new();
+        match self.day {
+            10 => alias += "初十",
+            20 => alias += "二十",
+            30 => alias += "三十",
+            _ => {
+                let n = (self.day / 10) as usize;
+                alias += DATE_ALIAS[n];
+                alias += NUMBER_ALIAS[(self.day % 10) as usize];
+            }
+        }
+        alias
     }
 }
 
@@ -373,6 +423,248 @@ mod tests {
             let want = case.2;
 
             let got = Lunar::new(arg.clone());
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_leap_month() {
+        let t1 = Utc.ymd(2018, 6, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
+
+        let test_cases = vec![("test_1", Lunar::new(t1), 0), ("test_2", Lunar::new(t2), 6)];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+            assert_eq!(Lunar::leap_month(lunar.year), want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_is_leap() {
+        let t1 = Utc.ymd(2018, 6, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), false),
+            ("test_2", Lunar::new(t2), true),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.is_leap();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_is_leap_month() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), false),
+            ("test_2", Lunar::new(t2), false),
+            ("test_3", Lunar::new(t3), true),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.is_leap_month();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_animal() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), Animal::new(11)),
+            ("test_2", Lunar::new(t2), Animal::new(10)),
+            ("test_3", Lunar::new(t3), Animal::new(10)),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2.unwrap();
+
+            let got = lunar.animal();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_year_alias() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), "二零一八"),
+            ("test_2", Lunar::new(t2), "二零一七"),
+            ("test_3", Lunar::new(t3), "二零一七"),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.year_alias();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+    #[test]
+    fn test_lunar_get_year() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), 2018),
+            ("test_2", Lunar::new(t2), 2017),
+            ("test_3", Lunar::new(t3), 2017),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.year;
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_month_alias() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), "三月"),
+            ("test_2", Lunar::new(t2), "五月"),
+            ("test_3", Lunar::new(t3), "闰六月"),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.month_alias();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_get_month() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), 3),
+            ("test_2", Lunar::new(t2), 5),
+            ("test_3", Lunar::new(t3), 6),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.month;
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_day_alias() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 4).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 6, 14).and_hms(0, 0, 0);
+        let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), "十六"),
+            ("test_2", Lunar::new(t2), "初十"),
+            ("test_3", Lunar::new(t3), "二十"),
+            ("test_33", Lunar::new(t4), "三十"),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.day_alias();
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_get_day() {
+        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
+        let t2 = Utc.ymd(2017, 6, 4).and_hms(0, 0, 0);
+        let t3 = Utc.ymd(2017, 6, 14).and_hms(0, 0, 0);
+        let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
+
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1), 16),
+            ("test_2", Lunar::new(t2), 10),
+            ("test_3", Lunar::new(t3), 20),
+            ("test_33", Lunar::new(t4), 30),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let lunar = case.1;
+            let want = case.2;
+
+            let got = lunar.day;
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_lunar_days() {
+        let test_cases = vec![
+            ("test_1", 2018, 0, 0),
+            ("test_2", 2018, 13, 0),
+            ("test_3", 2017, 6, 29),
+            ("test_4", 2017, 8, 30),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let want = case.3;
+
+            let got = Lunar::lunar_days(case.1, case.2);
 
             assert_eq!(got, want, "{} failed", name);
         }
