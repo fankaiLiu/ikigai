@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq)]
 pub struct Gan {
     order: i64,
 }

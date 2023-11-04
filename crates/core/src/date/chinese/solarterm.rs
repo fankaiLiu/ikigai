@@ -27443,7 +27443,8 @@ impl Solarterm {
         if !Self::is_supported(index) {
             return None;
         }
-        Some(Self { index })
+        //Some(Self {index: index % 24 })
+        Some(Self { index: index })
     }
 
     // 计算节气区间
@@ -27452,7 +27453,7 @@ impl Solarterm {
         let mut next = Self::len_j2000() - 1;
         let ts = t.timestamp();
         while next - prev > 1 {
-            let mid = prev + (next - prev) / 2;
+            let mid = prev + ((next - prev + 1) / 2);
             if Self::get_timestamp(prev) <= ts && ts < Self::get_timestamp(mid) {
                 next = mid;
             } else {

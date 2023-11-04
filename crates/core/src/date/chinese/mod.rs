@@ -1,6 +1,7 @@
 pub mod animal;
 pub mod constellation;
 pub mod gan;
+pub mod gan_zhi;
 pub mod lunar;
 pub mod solar;
 pub mod solarterm;
