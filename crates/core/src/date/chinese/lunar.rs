@@ -1,3 +1,6 @@
+use chrono::{Datelike, TimeZone, Utc};
+
+#[derive(Debug, PartialEq)]
 pub struct Lunar {
     t: chrono::DateTime<chrono::Utc>,
     year: i64,
@@ -68,9 +71,18 @@ impl Lunar {
         let lunar_day;
         let lunar_month_is_leap;
 
-        // 1900-01-31 in Unix timestamp
-        let start_timestamp: i64 = -2206425600;
-        let mut offset = (ts - start_timestamp) / 86400;
+        // Get date from input Unix timestamp
+        let dt = Utc.timestamp(ts, 0);
+        // Create a new Utc datetime with the same date but time at zero
+        let dt1 = Utc.ymd(dt.year(), dt.month(), dt.day()).and_hms(0, 0, 0);
+        // Create a new Utc datetime for 1900-01-31 at zero time
+        let dt2 = Utc.ymd(1900, 1, 31).and_hms(0, 0, 0);
+        // Calculate the difference in days
+        let mut offset = (dt1.timestamp() - dt2.timestamp()) / 86400;
+
+        // // 1900-01-31 in Unix timestamp
+        // let start_timestamp: i64 = -2206425600;
+        // let mut offset = (ts - start_timestamp) / 86400;
 
         let mut i = 1900;
         let mut days_of_year = 0;
@@ -124,7 +136,6 @@ impl Lunar {
         lunar_month = month_counter + 1;
         lunar_day = offset + 1;
         lunar_month_is_leap = is_leap;
-
         (lunar_year, lunar_month, lunar_day, lunar_month_is_leap)
     }
 
@@ -254,6 +265,8 @@ impl Lunar {
 
 #[cfg(test)]
 mod tests {
+    use chrono::{TimeZone, Utc};
+
     use super::*;
 
     #[test]
@@ -319,6 +332,47 @@ mod tests {
 
             let got =
                 Lunar::to_solar_timestamp(case.1, case.2, case.3, case.4, case.5, case.6, case.7);
+
+            assert_eq!(got, want, "{} failed", name);
+        }
+    }
+
+    #[test]
+    fn test_new_lunar() {
+        let t1 = Utc.ymd(2017, 8, 15).and_hms(12, 0, 0);
+        let t2 = Utc.ymd(2018, 3, 30).and_hms(23, 11, 30);
+
+        let test_cases = vec![
+            (
+                "test_1",
+                &t1,
+                Lunar {
+                    t: t1,
+                    year: 2017,
+                    month: 6,
+                    day: 24,
+                    month_is_leap: true,
+                },
+            ),
+            (
+                "test_2",
+                &t2,
+                Lunar {
+                    t: t2,
+                    year: 2018,
+                    month: 2,
+                    day: 14,
+                    month_is_leap: false,
+                },
+            ),
+        ];
+
+        for case in test_cases {
+            let name = case.0;
+            let arg = case.1;
+            let want = case.2;
+
+            let got = Lunar::new(arg.clone());
 
             assert_eq!(got, want, "{} failed", name);
         }
