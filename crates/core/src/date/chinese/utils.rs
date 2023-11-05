@@ -12,7 +12,7 @@ pub fn dd(jd: f64) -> (i32, i32, i32, i32, i32, i32) {
     // 取得日数的整数部份A及小数部分F
     let mut d = (jd + 0.5).floor();
     let mut f = jd + 0.5 - d;
-    let mut c = 0.0;
+    let c;
 
     if d >= 2299161.0 {
         c = ((d - 1867216.25) / 36524.25).floor();

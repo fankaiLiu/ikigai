@@ -148,7 +148,7 @@ impl Lunar {
         (lunar_year, lunar_month, lunar_day, lunar_month_is_leap)
     }
 
-    fn to_solar_timestamp(
+    pub fn to_solar_timestamp(
         year: i64,
         month: i64,
         day: i64,
@@ -165,7 +165,7 @@ impl Lunar {
         }
 
         let m = Self::leap_month(year);
-        let mut is_leap_month = is_leap_month && (m == month);
+        let is_leap_month = is_leap_month && (m == month);
 
         // beyond the max boundary
         if (year == 2100 && month == 12 && day > 1) || (year == 1900 && month == 1 && day < 31) {

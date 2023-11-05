@@ -1,4 +1,4 @@
-use chrono::{Datelike, Timelike, Weekday};
+use chrono::{Datelike, Timelike};
 
 use super::{animal::Animal, constellation::Constellation, solarterm::Solarterm, utils::order_mod};
 

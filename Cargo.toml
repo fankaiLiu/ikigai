@@ -7,8 +7,11 @@ version = "0.0.1"
 authors = ["fankai Liu <liufankai137@outlook.com>"]
 edition = "2021"
 description = """
-tofo
+ikigai
 """
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
+thiserror = "1.0.50"
+chrono = "0.4.31"
+ikigai_core = { version = "0.0.1", path = "crates/core" }
