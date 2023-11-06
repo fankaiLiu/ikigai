@@ -27508,8 +27508,9 @@ impl Solarterm {
     }
 
     // 根据节气时间戳获取DateTime对象
-    pub fn time(&self) -> DateTime<Utc> {
-        DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(self.timestamp(), 0), Utc)
+    pub fn time(&self) ->Option<DateTime<Utc>> {
+        let datetime=NaiveDateTime::from_timestamp_opt(self.timestamp(), 0)?;
+        Some(DateTime::<Utc>::from_naive_utc_and_offset(datetime, Utc))
     }
 
     // 上一个节气
@@ -27530,7 +27531,10 @@ impl Solarterm {
 
     pub fn is_in_day(&self, t: &DateTime<Utc>) -> bool {
         let s = self.time();
-
+        if s.is_none() {
+            return false;
+        }
+        let s = s.unwrap();
         let t1 = Utc.ymd(s.year(), s.month(), s.day()).and_hms(0, 0, 0);
 
         let t2 = t1 + chrono::Duration::days(1);
@@ -27557,4 +27561,13 @@ impl Solarterm {
     fn is_supported(index: i64) -> bool {
         0 <= index && index < Self::len_j2000()
     }
+}
+
+macro_rules! unwrap_or_return_false {
+    ($expr:expr) => {
+        match $expr {
+            Some(value) => value,
+            None => return false,
+        }
+    };
 }
