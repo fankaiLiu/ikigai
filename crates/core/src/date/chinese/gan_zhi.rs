@@ -28,7 +28,7 @@ impl Ganzhi {
         if !Self::is_supported(year) {
             return None;
         }
-        if t.timestamp() < Solarterm::spring_timestamp(year) {
+        if t.timestamp() < Solarterm::spring_timestamp(year)? {
             year -= 1;
         }
         let year_gan = Gan::new(utils::order_mod(year - 3, 10))?;

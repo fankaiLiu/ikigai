@@ -27432,6 +27432,16 @@ pub const SOLARTERM_J2000: [f64; 26328] = [
     2817537.75402778,
     2817552.48905733,
 ];
+
+macro_rules! unwrap_or_return_false {
+    ($expr:expr) => {
+        match $expr {
+            Some(value) => value,
+            None => return false,
+        }
+    };
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Solarterm {
     index: i64,
@@ -27454,13 +27464,13 @@ impl Solarterm {
         let ts = t.timestamp();
         while next - prev > 1 {
             let mid = prev + ((next - prev + 1) / 2);
-            if Self::get_timestamp(prev) <= ts && ts < Self::get_timestamp(mid) {
+            if Self::get_timestamp(prev) <= Some(ts) && Some(ts) < Self::get_timestamp(mid) {
                 next = mid;
             } else {
                 prev = mid;
             }
         }
-        if ts == Self::get_timestamp(prev) && prev - 1 >= 0 {
+        if Some(ts) == Self::get_timestamp(prev) && prev - 1 >= 0 {
             prev -= 1;
         }
         let p = Solarterm::new(prev);
@@ -27469,9 +27479,9 @@ impl Solarterm {
     }
 
     // 获取指定年份立春的时间
-    pub fn spring_timestamp(year: i64) -> i64 {
+    pub fn spring_timestamp(year: i64) -> Option<i64> {
         if year < SOLARTERM_FROM_YEAR || year > SOLARTERM_TO_YEAR {
-            0
+            None
         } else {
             Self::get_timestamp(24 * (year - SOLARTERM_FROM_YEAR) + 2)
         }
@@ -27503,13 +27513,13 @@ impl Solarterm {
     }
 
     // 返回当前节气的时间戳
-    pub fn timestamp(&self) -> i64 {
+    pub fn timestamp(&self) -> Option<i64> {
         Self::get_timestamp(self.index)
     }
 
     // 根据节气时间戳获取DateTime对象
-    pub fn time(&self) ->Option<DateTime<Utc>> {
-        let datetime=NaiveDateTime::from_timestamp_opt(self.timestamp(), 0)?;
+    pub fn time(&self) -> Option<DateTime<Utc>> {
+        let datetime = NaiveDateTime::from_timestamp_opt(self.timestamp()?, 0)?;
         Some(DateTime::<Utc>::from_naive_utc_and_offset(datetime, Utc))
     }
 
@@ -27530,11 +27540,7 @@ impl Solarterm {
     }
 
     pub fn is_in_day(&self, t: &DateTime<Utc>) -> bool {
-        let s = self.time();
-        if s.is_none() {
-            return false;
-        }
-        let s = s.unwrap();
+        let s = unwrap_or_return_false!(self.time());
         let t1 = Utc.ymd(s.year(), s.month(), s.day()).and_hms(0, 0, 0);
 
         let t2 = t1 + chrono::Duration::days(1);
@@ -27543,13 +27549,13 @@ impl Solarterm {
     }
 
     // 根据索引获取时间戳
-    fn get_timestamp(index: i64) -> i64 {
+    fn get_timestamp(index: i64) -> Option<i64> {
         let jd = SOLARTERM_J2000[index as usize];
         let (y, m, d, h, i, s) = utils::dd(jd);
         let date = Utc
             .ymd(y, m as u32, d as u32)
-            .and_hms(h as u32, i as u32, s as u32);
-        date.timestamp()
+            .and_hms_opt(h as u32, i as u32, s as u32)?;
+        Some(date.timestamp())
     }
 
     // 返回j2000数组的长度
@@ -27561,13 +27567,4 @@ impl Solarterm {
     fn is_supported(index: i64) -> bool {
         0 <= index && index < Self::len_j2000()
     }
-}
-
-macro_rules! unwrap_or_return_false {
-    ($expr:expr) => {
-        match $expr {
-            Some(value) => value,
-            None => return false,
-        }
-    };
 }

@@ -63,29 +63,31 @@ const LUNARS: [i64; 201] = [
 ];
 
 impl Lunar {
-    pub fn new(t: chrono::DateTime<chrono::Utc>) -> Lunar {
-        let (year, month, day, is_leap) = Self::from_solar_timestamp(t.timestamp());
-        Lunar {
+    pub fn new(t: chrono::DateTime<chrono::Utc>) -> Option<Lunar> {
+        let (year, month, day, is_leap) = Self::from_solar_timestamp(t.timestamp())?;
+        Some(Lunar {
             t: t,
             year: year,
             month: month,
             day: day,
             month_is_leap: is_leap,
-        }
+        })
     }
 
-    pub fn from_solar_timestamp(ts: i64) -> (i64, i64, i64, bool) {
+    pub fn from_solar_timestamp(ts: i64) -> Option<(i64, i64, i64, bool)> {
         let lunar_year;
         let lunar_month;
         let lunar_day;
         let lunar_month_is_leap;
 
         // Get date from input Unix timestamp
-        let dt = Utc.timestamp(ts, 0);
+        let dt = Utc.timestamp_opt(ts, 0).latest()?;
         // Create a new Utc datetime with the same date but time at zero
-        let dt1 = Utc.ymd(dt.year(), dt.month(), dt.day()).and_hms(0, 0, 0);
+        let dt1 = Utc
+            .with_ymd_and_hms(dt.year(), dt.month(), dt.day(), 0, 0, 0)
+            .latest()?;
         // Create a new Utc datetime for 1900-01-31 at zero time
-        let dt2 = Utc.ymd(1900, 1, 31).and_hms(0, 0, 0);
+        let dt2 = Utc.with_ymd_and_hms(1900, 1, 31, 0, 0, 0).latest()?;
         // Calculate the difference in days
         let mut offset = (dt1.timestamp() - dt2.timestamp()) / 86400;
 
@@ -145,7 +147,7 @@ impl Lunar {
         lunar_month = month_counter + 1;
         lunar_day = offset + 1;
         lunar_month_is_leap = is_leap;
-        (lunar_year, lunar_month, lunar_day, lunar_month_is_leap)
+        Some((lunar_year, lunar_month, lunar_day, lunar_month_is_leap))
     }
 
     pub fn to_solar_timestamp(
@@ -338,7 +340,7 @@ mod tests {
         {
             println!("Running {}", name);
             let (got_lunar_year, got_lunar_month, got_lunar_day, got_lunar_month_is_leap) =
-                Lunar::from_solar_timestamp(ts);
+                Lunar::from_solar_timestamp(ts).unwrap();
 
             assert_eq!(
                 got_lunar_year, want_lunar_year,
@@ -422,7 +424,7 @@ mod tests {
             let arg = case.1;
             let want = case.2;
 
-            let got = Lunar::new(arg.clone());
+            let got = Lunar::new(arg.clone()).unwrap();
 
             assert_eq!(got, want, "{} failed", name);
         }
@@ -433,7 +435,10 @@ mod tests {
         let t1 = Utc.ymd(2018, 6, 1).and_hms(0, 0, 0);
         let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
 
-        let test_cases = vec![("test_1", Lunar::new(t1), 0), ("test_2", Lunar::new(t2), 6)];
+        let test_cases = vec![
+            ("test_1", Lunar::new(t1).unwrap(), 0),
+            ("test_2", Lunar::new(t2).unwrap(), 6),
+        ];
 
         for case in test_cases {
             let name = case.0;
@@ -449,8 +454,8 @@ mod tests {
         let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), false),
-            ("test_2", Lunar::new(t2), true),
+            ("test_1", Lunar::new(t1).unwrap(), false),
+            ("test_2", Lunar::new(t2).unwrap(), true),
         ];
 
         for case in test_cases {
@@ -471,9 +476,9 @@ mod tests {
         let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), false),
-            ("test_2", Lunar::new(t2), false),
-            ("test_3", Lunar::new(t3), true),
+            ("test_1", Lunar::new(t1).unwrap(), false),
+            ("test_2", Lunar::new(t2).unwrap(), false),
+            ("test_3", Lunar::new(t3).unwrap(), true),
         ];
 
         for case in test_cases {
@@ -501,7 +506,7 @@ mod tests {
 
         for case in test_cases {
             let name = case.0;
-            let lunar = case.1;
+            let lunar = case.1.unwrap();
             let want = case.2.unwrap();
 
             let got = lunar.animal();
@@ -517,9 +522,9 @@ mod tests {
         let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), "二零一八"),
-            ("test_2", Lunar::new(t2), "二零一七"),
-            ("test_3", Lunar::new(t3), "二零一七"),
+            ("test_1", Lunar::new(t1).unwrap(), "二零一八"),
+            ("test_2", Lunar::new(t2).unwrap(), "二零一七"),
+            ("test_3", Lunar::new(t3).unwrap(), "二零一七"),
         ];
 
         for case in test_cases {
@@ -539,9 +544,9 @@ mod tests {
         let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), 2018),
-            ("test_2", Lunar::new(t2), 2017),
-            ("test_3", Lunar::new(t3), 2017),
+            ("test_1", Lunar::new(t1).unwrap(), 2018),
+            ("test_2", Lunar::new(t2).unwrap(), 2017),
+            ("test_3", Lunar::new(t3).unwrap(), 2017),
         ];
 
         for case in test_cases {
@@ -562,9 +567,9 @@ mod tests {
         let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), "三月"),
-            ("test_2", Lunar::new(t2), "五月"),
-            ("test_3", Lunar::new(t3), "闰六月"),
+            ("test_1", Lunar::new(t1).unwrap(), "三月"),
+            ("test_2", Lunar::new(t2).unwrap(), "五月"),
+            ("test_3", Lunar::new(t3).unwrap(), "闰六月"),
         ];
 
         for case in test_cases {
@@ -585,9 +590,9 @@ mod tests {
         let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), 3),
-            ("test_2", Lunar::new(t2), 5),
-            ("test_3", Lunar::new(t3), 6),
+            ("test_1", Lunar::new(t1).unwrap(), 3),
+            ("test_2", Lunar::new(t2).unwrap(), 5),
+            ("test_3", Lunar::new(t3).unwrap(), 6),
         ];
 
         for case in test_cases {
@@ -609,10 +614,10 @@ mod tests {
         let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), "十六"),
-            ("test_2", Lunar::new(t2), "初十"),
-            ("test_3", Lunar::new(t3), "二十"),
-            ("test_33", Lunar::new(t4), "三十"),
+            ("test_1", Lunar::new(t1).unwrap(), "十六"),
+            ("test_2", Lunar::new(t2).unwrap(), "初十"),
+            ("test_3", Lunar::new(t3).unwrap(), "二十"),
+            ("test_33", Lunar::new(t4).unwrap(), "三十"),
         ];
 
         for case in test_cases {
@@ -634,10 +639,10 @@ mod tests {
         let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
 
         let test_cases = vec![
-            ("test_1", Lunar::new(t1), 16),
-            ("test_2", Lunar::new(t2), 10),
-            ("test_3", Lunar::new(t3), 20),
-            ("test_33", Lunar::new(t4), 30),
+            ("test_1", Lunar::new(t1).unwrap(), 16),
+            ("test_2", Lunar::new(t2).unwrap(), 10),
+            ("test_3", Lunar::new(t3).unwrap(), 20),
+            ("test_33", Lunar::new(t4).unwrap(), 30),
         ];
 
         for case in test_cases {
