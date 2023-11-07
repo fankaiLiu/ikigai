@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Datelike, NaiveDateTime, TimeZone, Utc};
 
 use super::utils;
 

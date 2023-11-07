@@ -46,7 +46,7 @@ impl Ganzhi {
         let month_zhi = Zhi::new(utils::order_mod(i + 2, 12))?;
         let month_gan = Gan::new(utils::order_mod(i + year_gan.order() * 2, 10))?;
 
-        let begin = Utc.ymd(SOLARTERM_FROM_YEAR as i32, 1, 1).and_hms(0, 0, 0);
+        let begin = Utc.with_ymd_and_hms(SOLARTERM_FROM_YEAR as i32, 1, 1,0, 0, 0).latest()?;
         let seconds = t.signed_duration_since(begin).num_seconds();
         let day_order = utils::order_mod(seconds / 86400 + 31, 60);
 

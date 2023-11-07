@@ -494,9 +494,9 @@ mod tests {
 
     #[test]
     fn test_lunar_animal() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1), Animal::new(11)),
@@ -517,9 +517,9 @@ mod tests {
 
     #[test]
     fn test_lunar_year_alias() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), "二零一八"),
@@ -539,9 +539,9 @@ mod tests {
     }
     #[test]
     fn test_lunar_get_year() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), 2018),
@@ -562,9 +562,9 @@ mod tests {
 
     #[test]
     fn test_lunar_month_alias() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), "三月"),
@@ -585,9 +585,9 @@ mod tests {
 
     #[test]
     fn test_lunar_get_month() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), 3),
@@ -608,10 +608,10 @@ mod tests {
 
     #[test]
     fn test_lunar_day_alias() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 4).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 6, 14).and_hms(0, 0, 0);
-        let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 4,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 6, 14,0, 0, 0).unwrap();
+        let t4 = Utc.with_ymd_and_hms(2017, 8, 21,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), "十六"),
@@ -633,10 +633,10 @@ mod tests {
 
     #[test]
     fn test_lunar_get_day() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 4).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 6, 14).and_hms(0, 0, 0);
-        let t4 = Utc.ymd(2017, 8, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 4,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 6, 14,0, 0, 0).unwrap();
+        let t4 = Utc.with_ymd_and_hms(2017, 8, 21,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), 16),
