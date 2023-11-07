@@ -66,19 +66,19 @@ impl Lunar {
     pub fn new(t: chrono::DateTime<chrono::Utc>) -> Option<Lunar> {
         let (year, month, day, is_leap) = Self::from_solar_timestamp(t.timestamp())?;
         Some(Lunar {
-            t: t,
-            year: year,
-            month: month,
-            day: day,
+            t,
+            year,
+            month,
+            day,
             month_is_leap: is_leap,
         })
     }
 
     pub fn from_solar_timestamp(ts: i64) -> Option<(i64, i64, i64, bool)> {
-        let lunar_year;
-        let lunar_month;
-        let lunar_day;
-        let lunar_month_is_leap;
+        
+        
+        
+        
 
         // Get date from input Unix timestamp
         let dt = Utc.timestamp_opt(ts, 0).latest()?;
@@ -106,7 +106,7 @@ impl Lunar {
             offset += days_of_year;
             i -= 1;
         }
-        lunar_year = i;
+        let lunar_year = i;
 
         let leap = Self::leap_month(i);
         let mut is_leap = false;
@@ -144,9 +144,9 @@ impl Lunar {
             offset += days_of_month;
             month_counter -= 1;
         }
-        lunar_month = month_counter + 1;
-        lunar_day = offset + 1;
-        lunar_month_is_leap = is_leap;
+        let lunar_month = month_counter + 1;
+        let lunar_day = offset + 1;
+        let lunar_month_is_leap = is_leap;
         Some((lunar_year, lunar_month, lunar_day, lunar_month_is_leap))
     }
 
@@ -162,7 +162,7 @@ impl Lunar {
         let mut offset = 0;
 
         // validity check
-        if year < 1900 || year > 2100 {
+        if !(1900..=2100).contains(&year) {
             return 0;
         }
 
@@ -264,7 +264,7 @@ impl Lunar {
     }
 
     pub fn lunar_days(year: i64, month: i64) -> i64 {
-        if month > 12 || month < 1 {
+        if !(1..=12).contains(&month) {
             0
         } else if LUNARS[(year - 1900) as usize] & (0x10000 >> month) != 0 {
             30
@@ -282,7 +282,7 @@ impl Lunar {
     pub fn year_alias(&self) -> String {
         let mut result = self.year.to_string();
         for (i, alias) in NUMBER_ALIAS.iter().enumerate() {
-            result = result.replace(&i.to_string(), *alias);
+            result = result.replace(&i.to_string(), alias);
         }
         result
     }
@@ -424,7 +424,7 @@ mod tests {
             let arg = case.1;
             let want = case.2;
 
-            let got = Lunar::new(arg.clone()).unwrap();
+            let got = Lunar::new(*arg).unwrap();
 
             assert_eq!(got, want, "{} failed", name);
         }

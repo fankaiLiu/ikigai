@@ -16,11 +16,11 @@ impl Animal {
     }
 
     pub fn alias(&self) -> &str {
-        &ANIMAL_ALIAS[((self.order - 1) % 12) as usize]
+        ANIMAL_ALIAS[((self.order - 1) % 12) as usize]
     }
 
     fn is_supported(order: i64) -> bool {
-        1 <= order && order <= 12
+        (1..=12).contains(&order)
     }
 }
 #[cfg(test)]

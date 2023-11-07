@@ -27454,7 +27454,7 @@ impl Solarterm {
             return None;
         }
         //Some(Self {index: index % 24 })
-        Some(Self { index: index })
+        Some(Self { index })
     }
 
     // 计算节气区间
@@ -27470,7 +27470,7 @@ impl Solarterm {
                 prev = mid;
             }
         }
-        if Some(ts) == Self::get_timestamp(prev) && prev - 1 >= 0 {
+        if Some(ts) == Self::get_timestamp(prev) && prev > 0 {
             prev -= 1;
         }
         let p = Solarterm::new(prev);
@@ -27480,7 +27480,7 @@ impl Solarterm {
 
     // 获取指定年份立春的时间
     pub fn spring_timestamp(year: i64) -> Option<i64> {
-        if year < SOLARTERM_FROM_YEAR || year > SOLARTERM_TO_YEAR {
+        if !(SOLARTERM_FROM_YEAR..=SOLARTERM_TO_YEAR).contains(&year) {
             None
         } else {
             Self::get_timestamp(24 * (year - SOLARTERM_FROM_YEAR) + 2)

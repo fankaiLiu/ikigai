@@ -120,7 +120,7 @@ impl Ganzhi {
     }
 
     pub fn is_supported(year: i64) -> bool {
-        solarterm::SOLARTERM_FROM_YEAR <= year && year < solarterm::SOLARTERM_TO_YEAR
+        (solarterm::SOLARTERM_FROM_YEAR..solarterm::SOLARTERM_TO_YEAR).contains(&year)
     }
 
     pub fn ganzhi_order(gan_order: i64, zhi_order: i64) -> i64 {
@@ -148,7 +148,7 @@ mod tests {
         n: i64,
     ) -> Ganzhi {
         Ganzhi {
-            t: t,
+            t,
             year_gan: Gan::new(yg).unwrap(),
             year_zhi: Zhi::new(yz).unwrap(),
             month_gan: Gan::new(mg).unwrap(),

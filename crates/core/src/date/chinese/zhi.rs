@@ -19,7 +19,7 @@ impl Zhi {
 
     // Returns the name of the 'Zhi' (子丑寅卯...)
     pub fn alias(&self) -> &str {
-        &ZHI_ALIAS[(self.order - 1) as usize % 12]
+        ZHI_ALIAS[(self.order - 1) as usize % 12]
     }
 
     // Returns the order of the 'Zhi' (1234...)
@@ -28,7 +28,7 @@ impl Zhi {
     }
 
     fn is_supported(order: i64) -> bool {
-        1 <= order && order <= 12
+        (1..=12).contains(&order)
     }
 }
 #[cfg(test)]

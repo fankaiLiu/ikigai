@@ -14,7 +14,7 @@ impl Gan {
     }
 
     pub fn alias(&self) -> &str {
-        &GAN_ALIAS[(self.order as usize - 1) % 10]
+        GAN_ALIAS[(self.order as usize - 1) % 10]
     }
 
     pub fn order(&self) -> i64 {
@@ -22,7 +22,7 @@ impl Gan {
     }
 
     fn is_supported(order: i64) -> bool {
-        1 <= order && order <= 10
+        (1..=10).contains(&order)
     }
 }
 
