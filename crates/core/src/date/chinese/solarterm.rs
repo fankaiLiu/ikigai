@@ -27541,7 +27541,7 @@ impl Solarterm {
 
     pub fn is_in_day(&self, t: &DateTime<Utc>) -> bool {
         let s = unwrap_or_return_false!(self.time());
-        let t1 = Utc.ymd(s.year(), s.month(), s.day()).and_hms(0, 0, 0);
+        let t1 =unwrap_or_return_false!(Utc.with_ymd_and_hms(s.year(), s.month(), s.day(),0, 0, 0).latest());
 
         let t2 = t1 + chrono::Duration::days(1);
 
@@ -27553,8 +27553,7 @@ impl Solarterm {
         let jd = SOLARTERM_J2000[index as usize];
         let (y, m, d, h, i, s) = utils::dd(jd);
         let date = Utc
-            .ymd(y, m as u32, d as u32)
-            .and_hms_opt(h as u32, i as u32, s as u32)?;
+            .with_ymd_and_hms(y, m as u32, d as u32,h as u32, i as u32, s as u32).latest()?;
         Some(date.timestamp())
     }
 

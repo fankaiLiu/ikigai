@@ -139,8 +139,8 @@ mod tests {
     }
     #[test]
     fn test_solar_is_leap() {
-        let t1 = Utc.ymd(2018, 3, 21).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2020, 3, 21).and_hms(0, 1, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 3, 21,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2020, 3, 21,0, 1, 0).unwrap();
 
         let tests = vec![
             ("test_2018", Solar::new(t1).unwrap(), false),
@@ -155,8 +155,8 @@ mod tests {
     }
     #[test]
     fn test_solar_week_number() {
-        let t1 = Utc.ymd(2018, 3, 21).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 3, 25).and_hms(0, 1, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 3, 21,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 3, 25,0, 1, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 3),
@@ -172,8 +172,8 @@ mod tests {
 
     #[test]
     fn test_solar_week_alias() {
-        let t1 = Utc.ymd(2018, 3, 21).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 3, 25).and_hms(0, 1, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 3, 21,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 3, 25,0, 1, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), "三"),
@@ -189,8 +189,8 @@ mod tests {
 
     #[test]
     fn test_solar_animal() {
-        let t1 = Utc.ymd(2018, 3, 21).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2019, 3, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 3, 21,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2019, 3, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), Animal::new(11)),
@@ -206,8 +206,8 @@ mod tests {
 
     #[test]
     fn test_solar_constellation() {
-        let t1 = Utc.ymd(2018, 3, 21).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 3, 21,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), Constellation::new(t1)),
@@ -227,8 +227,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_year() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 2015),
@@ -244,8 +244,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_month() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 1),
@@ -261,8 +261,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_day() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 20),
@@ -278,8 +278,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_hour() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 0),
@@ -295,8 +295,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_minute() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 0),
@@ -311,8 +311,8 @@ mod tests {
     }
     #[test]
     fn test_solar_get_second() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 0),
@@ -328,8 +328,8 @@ mod tests {
 
     #[test]
     fn test_solar_get_nanosecond() {
-        let t1 = Utc.ymd(2015, 1, 20).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 11, 21).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2015, 1, 20,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 11, 21,0, 0, 0).unwrap();
 
         let tests = vec![
             ("test_1", Solar::new(t1).unwrap(), 0),

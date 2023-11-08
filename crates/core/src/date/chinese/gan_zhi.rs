@@ -165,15 +165,13 @@ mod tests {
     #[test]
     fn test_new_ganzhi() {
         let t1 = Utc
-            .ymd((solarterm::SOLARTERM_FROM_YEAR - 1) as i32, 6, 1)
-            .and_hms(0, 0, 0);
+            .with_ymd_and_hms((solarterm::SOLARTERM_FROM_YEAR - 1) as i32, 6, 1,0, 0, 0).unwrap();
         let t2 = Utc
-            .ymd((solarterm::SOLARTERM_TO_YEAR + 1) as i32, 6, 1)
-            .and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t4 = Utc.ymd(2018, 2, 4).and_hms(5, 28, 28);
-        let t5 = Utc.ymd(2018, 2, 4).and_hms(5, 28, 29);
-        let t6 = Utc.ymd(2018, 2, 4).and_hms(5, 28, 30);
+            .with_ymd_and_hms((solarterm::SOLARTERM_TO_YEAR + 1) as i32, 6, 1,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t4 = Utc.with_ymd_and_hms(2018, 2, 4,5, 28, 28).unwrap();
+        let t5 = Utc.with_ymd_and_hms(2018, 2, 4,5, 28, 29).unwrap();
+        let t6 = Utc.with_ymd_and_hms(2018, 2, 4,5, 28, 30).unwrap();
 
         let test_cases = vec![
             (t1, None),
@@ -217,8 +215,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_animal() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), Animal::new(10)),
             ("test_2", Ganzhi::new(t2), Animal::new(11)),
@@ -239,8 +237,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_year_ganzhi_alias() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), "丁酉"),
             ("test_2", Ganzhi::new(t2), "戊戌"),
@@ -259,8 +257,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_month_ganzhi_alias() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), "壬子"),
             ("test_2", Ganzhi::new(t2), "甲寅"),
@@ -279,8 +277,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_day_ganzhi_alias() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), "癸巳"),
             ("test_2", Ganzhi::new(t2), "戊辰"),
@@ -299,8 +297,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_hour_ganzhi_alias() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), "壬子"),
             ("test_2", Ganzhi::new(t2), "壬子"),
@@ -319,8 +317,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_year_ganzhi_order() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), 34),
             ("test_2", Ganzhi::new(t2), 35),
@@ -339,8 +337,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_month_ganzhi_order() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), 49),
             ("test_2", Ganzhi::new(t2), 51),
@@ -359,8 +357,8 @@ mod tests {
 
     #[test]
     fn test_ganzhi_day_ganzhi_order() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), 30),
             ("test_2", Ganzhi::new(t2), 5),
@@ -378,8 +376,8 @@ mod tests {
     }
     #[test]
     fn test_ganzhi_hour_ganzhi_order() {
-        let t1 = Utc.ymd(2018, 1, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2018, 2, 5).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 1, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 2, 5,0, 0, 0).unwrap();
         let tests = vec![
             ("test_1", Ganzhi::new(t1), 49),
             ("test_2", Ganzhi::new(t2), 49),

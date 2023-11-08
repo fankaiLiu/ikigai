@@ -75,11 +75,6 @@ impl Lunar {
     }
 
     pub fn from_solar_timestamp(ts: i64) -> Option<(i64, i64, i64, bool)> {
-        
-        
-        
-        
-
         // Get date from input Unix timestamp
         let dt = Utc.timestamp_opt(ts, 0).latest()?;
         // Create a new Utc datetime with the same date but time at zero
@@ -391,8 +386,8 @@ mod tests {
 
     #[test]
     fn test_new_lunar() {
-        let t1 = Utc.ymd(2017, 8, 15).and_hms(12, 0, 0);
-        let t2 = Utc.ymd(2018, 3, 30).and_hms(23, 11, 30);
+        let t1 = Utc.with_ymd_and_hms(2017, 8, 15,12, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2018, 3, 30,23, 11, 30).unwrap();
 
         let test_cases = vec![
             (
@@ -432,8 +427,8 @@ mod tests {
 
     #[test]
     fn test_lunar_leap_month() {
-        let t1 = Utc.ymd(2018, 6, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 6, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 1,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), 0),
@@ -450,8 +445,8 @@ mod tests {
 
     #[test]
     fn test_lunar_is_leap() {
-        let t1 = Utc.ymd(2018, 6, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 1).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 6, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 1,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), false),
@@ -471,9 +466,9 @@ mod tests {
 
     #[test]
     fn test_lunar_is_leap_month() {
-        let t1 = Utc.ymd(2018, 5, 1).and_hms(0, 0, 0);
-        let t2 = Utc.ymd(2017, 6, 15).and_hms(0, 0, 0);
-        let t3 = Utc.ymd(2017, 8, 15).and_hms(0, 0, 0);
+        let t1 = Utc.with_ymd_and_hms(2018, 5, 1,0, 0, 0).unwrap();
+        let t2 = Utc.with_ymd_and_hms(2017, 6, 15,0, 0, 0).unwrap();
+        let t3 = Utc.with_ymd_and_hms(2017, 8, 15,0, 0, 0).unwrap();
 
         let test_cases = vec![
             ("test_1", Lunar::new(t1).unwrap(), false),
